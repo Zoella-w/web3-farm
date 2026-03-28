@@ -51,9 +51,9 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, prefix = '', suf
 const OnchainData = () => {
   // Mock data for demonstration
   const data = [
-    { label: 'A池（运营）总资金', value: 1250000.5, prefix: '$', decimals: 2 },
-    { label: 'B池（发展）总资金', value: 3450000.75, prefix: '$', decimals: 2 },
-    { label: 'VeggieBox代币价格', value: 1.2345, prefix: '$', decimals: 4 },
+    { label: 'Operational Treasury', value: 1250000.5, prefix: '$', decimals: 2 },
+    { label: 'Growth Treasury', value: 3450000.75, prefix: '$', decimals: 2 },
+    { label: 'VeggieBox Token Price', value: 1.2345, prefix: '$', decimals: 4 },
   ];
 
   return (

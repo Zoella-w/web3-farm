@@ -5,8 +5,23 @@ import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import OnchainData from '@/components/OnchainData';
 import VideoBackground from '@/components/VideoBackground';
+import HowItWorks from '@/components/HowItWorks';
+import LiveDataTrust from '@/components/LiveDataTrust';
+import BIDTFramework from '@/components/BIDTFramework';
+import CallToAction from '@/components/CallToAction';
 
 export default function Home() {
+  const scrollToHowItWorks = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.getElementById('how-it-works');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      // Update URL hash to trigger visual feedback in HowItWorks component
+      window.history.pushState(null, '', '#how-it-works');
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground overflow-hidden">
       <Header />
@@ -27,9 +42,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-2xl text-gray-300 max-w-2xl mx-auto mb-11"
+            className="text-3xl text-gray-300 max-w-3xl mx-auto mb-11"
           >
-            The next generation Web3 platform for sustainable agriculture and community governance.
+            From Soil to Shares: Own the Future of Farming
           </motion.p>
 
           <motion.div
@@ -37,31 +52,21 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <button className="bg-tech-gradient text-[#1a1a1a] px-[52px] py-[14px] rounded-full font-bold text-2xl hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all duration-300">
+            <a
+              href="#how-it-works"
+              onClick={scrollToHowItWorks}
+              className="inline-block bg-tech-gradient text-[#1c1c1c] px-14 py-3 rounded-full font-bold text-[23px] hover:shadow-[0_0_30px_rgba(34,197,94,0.6)] transition-all duration-300"
+            >
               Explore Now
-            </button>
+            </a>
           </motion.div>
         </div>
       </div>
 
-      <section className="py-24 relative z-20 bg-background">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl font-bold text-center mb-12">
-              Platform <span className="text-transparent bg-clip-text bg-tech-gradient">Statistics</span>
-            </h2>
-            <OnchainData />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* More sections can be added here */}
-      <div className="h-screen bg-background"></div>
+      <HowItWorks />
+      <LiveDataTrust />
+      <BIDTFramework />
+      <CallToAction />
     </main>
   );
 }

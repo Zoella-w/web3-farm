@@ -21,7 +21,7 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['首页', '购买代币', '资金池', '社区治理', '个人中心'];
+  const navItems = ['Home', 'Buy Tokens', 'Pools & Yield', 'Governance', 'Dashboard'];
 
   return (
     <motion.header

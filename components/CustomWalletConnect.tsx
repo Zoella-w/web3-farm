@@ -40,7 +40,7 @@ export const CustomWalletConnect = () => {
                     type="button"
                     className="bg-tech-gradient text-black px-6 py-2 rounded-full font-semibold hover:opacity-90 transition-opacity"
                   >
-                    连接钱包
+                    Connect Wallet
                   </button>
                 );
               }
@@ -52,7 +52,7 @@ export const CustomWalletConnect = () => {
                     type="button"
                     className="bg-red-500 text-white px-6 py-2 rounded-full font-semibold hover:bg-red-600 transition-colors"
                   >
-                    网络错误
+                    Wrong Network
                   </button>
                 );
               }
