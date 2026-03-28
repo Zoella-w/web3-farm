@@ -24,9 +24,9 @@ const Header = () => {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Buy Tokens', href: '/buy' },
-    { label: 'Pools & Yield', href: '/#live-data' },
+    { label: 'Pools & Yield', href: '/pools-yield' },
     { label: 'Governance', href: '/#framework' },
-    { label: 'Dashboard', href: '/#live-data' },
+    { label: 'Account', href: '/account' },
   ];
 
   return (

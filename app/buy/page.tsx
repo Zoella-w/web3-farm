@@ -79,13 +79,18 @@ export default function BuyPage() {
   const [selectedNftId, setSelectedNftId] = useState(1);
   const listRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const isProgrammaticScrollRef = useRef(false);
   const [lastCarouselInteractionAt, setLastCarouselInteractionAt] = useState<number>(() => Date.now());
   const [vbxAmountInput, setVbxAmountInput] = useState("");
   const [toast, setToast] = useState<string | null>(null);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(true);
   const [showFaq, setShowFaq] = useState(false);
 
-  const [purchaseHistory, setPurchaseHistory] = useLocalStorage<PurchaseRecord[]>("greenfield_purchase_history", []);
+  const [purchaseHistory, setPurchaseHistory] = useLocalStorage<PurchaseRecord[]>("greenfield_purchase_history", [
+    { kind: "VBX", amountVbx: "500.0", hash: "0x74f2e9d1a8c3b5e4f60d21a9c8b7f5e4d3c2b1a0e9d8c7b6a5f4e3d2c1b0a9f8", ts: Date.now() - 1000 * 60 * 60 * 2 },
+    { kind: "NFT", tokenId: 42, hash: "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b", ts: Date.now() - 1000 * 60 * 60 * 24 },
+    { kind: "VBX", amountVbx: "1250.5", hash: "0x8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b", ts: Date.now() - 1000 * 60 * 60 * 48 },
+  ]);
   const [soldTokenIds, setSoldTokenIds] = useLocalStorage<number[]>("greenfield_sold_nfts", []);
   const soldSet = useMemo(() => new Set(soldTokenIds), [soldTokenIds]);
 
@@ -93,6 +98,15 @@ export default function BuyPage() {
     if (typeof window === "undefined") return;
     if (window.location.hash === "#nft") setActiveTab("nft");
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (activeTab === "nft") {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search + "#nft");
+    } else {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (!toast) return;
@@ -111,7 +125,12 @@ export default function BuyPage() {
     if (activeTab !== "nft") return;
     const item = itemRefs.current[selectedNftId];
     if (!item) return;
+    isProgrammaticScrollRef.current = true;
     item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const timer = setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 1000);
+    return () => clearTimeout(timer);
   }, [activeTab, selectedNftId]);
 
   useEffect(() => {
@@ -120,7 +139,7 @@ export default function BuyPage() {
       const now = Date.now();
       if (now - lastCarouselInteractionAt < 5000) return;
       setSelectedNftId((prev) => (prev >= NFT_TOTAL_SUPPLY ? 1 : prev + 1));
-    }, 800);
+    }, 3000);
     return () => clearInterval(interval);
   }, [activeTab, lastCarouselInteractionAt]);
 
@@ -488,63 +507,157 @@ export default function BuyPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
           <div
-            className="lg:col-span-7 relative rounded-3xl border border-gray-light/40 bg-black/20 overflow-hidden group"
+            className="lg:col-span-7 relative rounded-3xl border border-gray-light/40 bg-[#0f2a20] overflow-hidden group"
             onMouseEnter={() => setLastCarouselInteractionAt(Date.now())}
             onMouseMove={() => setLastCarouselInteractionAt(Date.now())}
           >
             <div className="relative h-[420px] lg:h-[520px] flex items-center justify-center">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.22),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.14),transparent_60%)] opacity-70" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
+              {/* Background Gradient & Pattern */}
+              <div className="absolute inset-0 bg-[conic-gradient(from_225deg_at_50%_50%,#0f2a20,#1a3a2a,#0f2a20)]" />
+              <motion.div
+                animate={{
+                  x: [0, -20, 0],
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute inset-0 opacity-[0.03]"
+                style={{
+                  backgroundImage: `radial-gradient(#10b981 1px, transparent 1px)`,
+                  backgroundSize: '32px 32px',
+                }}
+              />
 
-              <div className="relative z-10 w-full h-full flex flex-col justify-between p-10">
+              {/* Core Visual Placeholder */}
+              <div className="relative z-10 flex flex-col items-center">
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(16, 185, 129, 0)",
+                      "0 0 40px rgba(16, 185, 129, 0.3)",
+                      "0 0 20px rgba(16, 185, 129, 0)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="w-32 h-32 lg:w-40 lg:h-40 rounded-full bg-accent-green-mid/10 border border-accent-green-mid/30 flex items-center justify-center relative mb-6"
+                >
+                  <div className="flex flex-col items-center">
+                    <span className="text-6xl lg:text-7xl font-bold text-accent-green-mid opacity-40">?</span>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Information Overlay */}
+              <div className="absolute inset-0 z-10 w-full h-full flex flex-col justify-between p-10 pointer-events-none">
                 <div className="flex items-center justify-between gap-6">
-                  <div className="text-white/90 font-black text-5xl lg:text-6xl">{formatTokenId(selectedNftId)}</div>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full border ${isSelectedSold
-                        ? "border-gray-light text-gray-400 bg-gray-dark/40"
-                        : "border-accent-green-mid/40 text-accent-green-mid bg-accent-green-mid/10"
-                        }`}
-                    >
-                      {isSelectedSold ? "Sold" : "Available"}
-                    </span>
-                    <span className="text-xs px-3 py-1 rounded-full border border-gray-light/40 text-gray-300 bg-gray-dark/30">
-                      {NFT_PRICE_USDC} USDC
-                    </span>
+                  <div>
+                    <div className="text-white/90 font-black text-4xl lg:text-5xl mb-1">HarvestShare {formatTokenId(selectedNftId)}</div>
+                    <div className="text-gray-400 text-sm font-medium tracking-widest uppercase">ERC-721 Token</div>
+                  </div>
+                  <div className="flex flex-col items-end gap-3 pointer-events-auto">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-xs px-4 py-1.5 rounded-full font-bold border transition-colors ${isSelectedSold
+                          ? "border-gray-light/40 text-gray-400 bg-gray-dark/60"
+                          : "border-accent-green-mid/40 text-white bg-[#064e3b]"
+                          }`}
+                      >
+                        {isSelectedSold ? "Sold Out" : "Available"}
+                      </span>
+                      <span className="text-xs px-4 py-1.5 rounded-full border border-gray-light/40 text-gray-300 bg-gray-dark/30 font-bold">
+                        {NFT_PRICE_USDC} USDC
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-5">
-                  {mintedCount >= NFT_TOTAL_SUPPLY && (
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-dark/50 border border-gray-light/40 text-gray-200 font-bold w-fit">
-                      Sold Out
+                <div className="flex flex-col gap-8">
+                  {/* Benefits Summary */}
+                  <div className="flex gap-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-accent-green-mid/10 border border-accent-green-mid/20 flex items-center justify-center text-accent-green-mid">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                          <path d="M17 6h6v6" />
+                        </svg>
+                      </div>
+                      <div className="text-sm">
+                        <div className="text-white font-bold">Real-time Yield</div>
+                        <div className="text-gray-400 text-xs">Direct distributions</div>
+                      </div>
                     </div>
-                  )}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-accent-green-mid/10 border border-accent-green-mid/20 flex items-center justify-center text-accent-green-mid">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          <path d="M9 12l2 2 4-4" />
+                        </svg>
+                      </div>
+                      <div className="text-sm">
+                        <div className="text-white font-bold">Governance</div>
+                        <div className="text-gray-400 text-xs">Voting rights</div>
+                      </div>
+                    </div>
+                  </div>
 
-                  {!isSelectedSold && mintedCount < NFT_TOTAL_SUPPLY && (
-                    <div className="flex flex-col lg:flex-row gap-4">
-                      <button
-                        onClick={() => {
-                          setLastCarouselInteractionAt(Date.now());
-                          approveNft();
-                        }}
-                        disabled={!needsApproveNft || isSelectedBusy}
-                        className="px-8 py-4 rounded-2xl bg-gray-light text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-light/80 transition-colors"
-                      >
-                        {isApprovingNft || nftApproveReceipt.isLoading ? "Waiting..." : "Approve USDC"}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setLastCarouselInteractionAt(Date.now());
-                          mintNft(selectedNftId);
-                        }}
-                        disabled={needsApproveNft || isSelectedBusy}
-                        className="px-8 py-4 rounded-2xl bg-tech-gradient text-[#1c1c1c] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-all"
-                      >
-                        {isMinting || nftMintReceipt.isLoading ? "Minting..." : "Buy"}
-                      </button>
+                  <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-6 pointer-events-auto">
+                    <div className="flex-1">
+                      {isSelectedSold ? (
+                        <div className="text-gray-400 font-medium italic">Owned by community member</div>
+                      ) : mintedCount >= NFT_TOTAL_SUPPLY ? (
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-dark/50 border border-gray-light/40 text-gray-200 font-bold w-fit">
+                          Sold Out
+                        </div>
+                      ) : (
+                        <div className="flex flex-col lg:flex-row gap-4">
+                          <button
+                            onClick={() => {
+                              setLastCarouselInteractionAt(Date.now());
+                              approveNft();
+                            }}
+                            disabled={!needsApproveNft || isSelectedBusy}
+                            className="px-8 py-4 rounded-2xl bg-gray-light text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-light/80 transition-colors"
+                          >
+                            {isApprovingNft || nftApproveReceipt.isLoading ? "Waiting..." : "Approve USDC"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setLastCarouselInteractionAt(Date.now());
+                              mintNft(selectedNftId);
+                            }}
+                            disabled={needsApproveNft || isSelectedBusy}
+                            className="px-8 py-4 rounded-2xl bg-tech-gradient text-[#1c1c1c] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-all"
+                          >
+                            {isMinting || nftMintReceipt.isLoading ? "Minting..." : "Buy"}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
+
+                    {/* Tooltip Icon */}
+                    <div className="relative group/tooltip">
+                      <div className="w-8 h-8 rounded-full border border-gray-light/30 flex items-center justify-center text-gray-500 hover:text-white hover:border-white transition-all cursor-help">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                      </div>
+                      <div className="absolute bottom-full right-0 mb-3 w-64 p-4 bg-gray-dark/95 backdrop-blur-md border border-gray-light/40 rounded-2xl opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                        <div className="text-xs text-gray-200 leading-relaxed">
+                          This NFT uses theme-based visuals. On-chain ownership and benefits are fully valid.
+                        </div>
+                        <div className="absolute bottom-[-6px] right-3 w-3 h-3 bg-gray-dark border-r border-b border-gray-light/40 rotate-45" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -553,7 +666,7 @@ export default function BuyPage() {
                   setLastCarouselInteractionAt(Date.now());
                   setSelectedNftId((prev) => (prev <= 1 ? NFT_TOTAL_SUPPLY : prev - 1));
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-dark/60 border border-gray-light/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-dark/60 border border-gray-light/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M15 18l-6-6 6-6" />
@@ -564,7 +677,7 @@ export default function BuyPage() {
                   setLastCarouselInteractionAt(Date.now());
                   setSelectedNftId((prev) => (prev >= NFT_TOTAL_SUPPLY ? 1 : prev + 1));
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-dark/60 border border-gray-light/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gray-dark/60 border border-gray-light/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 18l6-6-6-6" />
@@ -598,8 +711,11 @@ export default function BuyPage() {
             <div className="text-white font-bold text-lg mb-4">All NFTs</div>
             <div
               ref={listRef}
-              className="h-[280px] lg:h-[640px] overflow-y-auto pr-2 space-y-2"
-              onScroll={() => setLastCarouselInteractionAt(Date.now())}
+              className="h-[280px] lg:h-[500px] overflow-y-auto pr-2 space-y-2 custom-scrollbar"
+              onScroll={() => {
+                if (isProgrammaticScrollRef.current) return;
+                setLastCarouselInteractionAt(Date.now());
+              }}
             >
               {Array.from({ length: NFT_TOTAL_SUPPLY }).map((_, i) => {
                 const id = i + 1;
@@ -622,12 +738,15 @@ export default function BuyPage() {
                       } ${isBusy ? "opacity-70" : ""}`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-light/40 to-gray-dark/40 border border-gray-light/30 flex items-center justify-center text-white/30 font-black">
-                        {String(id).padStart(2, "0")}
+                      <div className={`w-10 h-10 rounded-xl border flex items-center justify-center relative flex-none transition-colors ${isSelected
+                        ? "bg-accent-green-mid/20 border-accent-green-mid/40"
+                        : "bg-gray-dark/50 border-gray-light/20 group-hover:border-gray-light/40"
+                        }`}>
+                        <span className={`text-lg font-bold transition-colors ${isSelected ? "text-accent-green-mid" : "text-gray-600"}`}>?</span>
                       </div>
                       <div className="text-left min-w-0">
-                        <div className="text-white font-semibold truncate">{formatTokenId(id)}</div>
-                        <div className="text-xs text-gray-400">{NFT_PRICE_USDC} USDC</div>
+                        <div className={`font-semibold truncate transition-colors ${isSelected ? "text-white" : "text-gray-300"}`}>{formatTokenId(id)}</div>
+                        <div className="text-xs text-gray-500">{NFT_PRICE_USDC} USDC</div>
                       </div>
                     </div>
 
@@ -679,17 +798,21 @@ export default function BuyPage() {
             </div>
           </div>
 
-          <div className="mb-10">
-            <div className="inline-flex bg-gray-dark/60 border border-gray-light/40 rounded-full p-1">
+          <div className="flex justify-center">
+            <div className="inline-flex bg-gray-dark/60 border border-gray-light/40 rounded-full p-1.5 gap-2">
               <button
                 onClick={() => setActiveTab("ft")}
-                className={`px-8 py-2 rounded-full font-bold transition-colors ${activeTab === "ft" ? "bg-tech-gradient text-[#1c1c1c]" : "text-gray-300"}`}
+                className={`px-10 py-2.5 rounded-full font-bold transition-all duration-300 border-2 ${activeTab === "ft"
+                  ? "bg-tech-gradient text-[#1c1c1c] border-transparent shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                  : "text-gray-400 border-white/20 hover:border-white/40 hover:text-white"}`}
               >
                 VeggieBox (FT)
               </button>
               <button
                 onClick={() => setActiveTab("nft")}
-                className={`px-8 py-2 rounded-full font-bold transition-colors ${activeTab === "nft" ? "bg-tech-gradient text-[#1c1c1c]" : "text-gray-300"}`}
+                className={`px-10 py-2.5 rounded-full font-bold transition-all duration-300 border-2 ${activeTab === "nft"
+                  ? "bg-tech-gradient text-[#1c1c1c] border-transparent shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                  : "text-gray-400 border-white/20 hover:border-white/40 hover:text-white"}`}
               >
                 HarvestShare (NFT)
               </button>
