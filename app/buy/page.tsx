@@ -124,9 +124,15 @@ export default function BuyPage() {
   useEffect(() => {
     if (activeTab !== "nft") return;
     const item = itemRefs.current[selectedNftId];
-    if (!item) return;
+    const container = listRef.current;
+    if (!item || !container) return;
+
     isProgrammaticScrollRef.current = true;
-    item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    container.scrollTo({
+      top: item.offsetTop,
+      behavior: "smooth"
+    });
+
     const timer = setTimeout(() => {
       isProgrammaticScrollRef.current = false;
     }, 1000);
@@ -711,7 +717,7 @@ export default function BuyPage() {
             <div className="text-white font-bold text-lg mb-4">All NFTs</div>
             <div
               ref={listRef}
-              className="h-[280px] lg:h-[500px] overflow-y-auto pr-2 space-y-2 custom-scrollbar"
+              className="relative h-[280px] lg:h-[500px] overflow-y-auto pr-2 space-y-2 custom-scrollbar"
               onScroll={() => {
                 if (isProgrammaticScrollRef.current) return;
                 setLastCarouselInteractionAt(Date.now());
@@ -799,7 +805,7 @@ export default function BuyPage() {
           </div>
 
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-dark/60 border border-gray-light/40 rounded-full p-1.5 gap-2">
+            <div className="inline-flex bg-gray-dark/60 border border-gray-light/40 rounded-full p-1.5 gap-2 mb-6">
               <button
                 onClick={() => setActiveTab("ft")}
                 className={`px-10 py-2.5 rounded-full font-bold transition-all duration-300 border-2 ${activeTab === "ft"

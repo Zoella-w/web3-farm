@@ -25,7 +25,7 @@ const Header = () => {
     { label: 'Home', href: '/' },
     { label: 'Buy Tokens', href: '/buy' },
     { label: 'Pools & Yield', href: '/pools-yield' },
-    { label: 'Governance', href: '/#framework' },
+    { label: 'Governance', href: '/governance' },
     { label: 'Account', href: '/account' },
   ];
 
