@@ -10,7 +10,7 @@ const CallToAction = () => {
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const router = useRouter();
-  const [showContract, setShowContract] = useState(false);
+  const [showContract, setShowContract] = useState(true);
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
   // Mock NFT holding status (In real app, use useReadContract)
@@ -62,7 +62,7 @@ const CallToAction = () => {
   ];
 
   const contracts = [
-    { name: "VeggieBox (ERC-20)", address: "0x861a014629bD7FADFAE540Fc4B8946EB9F81f695" },
+    { name: "VeggieBox (ERC-20)", address: "0xc3aB0C35b4be7C1870b7CA432385770EaAF0240a" },
     { name: "HarvestShare (ERC-721)", address: "0xbbc44C6B42819E31422Ad6bc09fd175014500c01" },
     { name: "CSA Farm Core Logic", address: "0x0000000000000000000000000000000000000000" }
   ];
@@ -133,7 +133,7 @@ const CallToAction = () => {
         </div>
 
         {/* Footer Info */}
-        <div className="pt-20 border-t border-gray-light/20 flex flex-col items-center">
+        <div className="pt-16 border-t border-gray-light/20 flex flex-col items-center">
           {/* Contract Address Toggle */}
           <div className="relative mb-[180px] flex flex-col items-center">
             <button
@@ -155,9 +155,9 @@ const CallToAction = () => {
                     initial={{ height: 0, opacity: 0, y: -10 }}
                     animate={{ height: 'auto', opacity: 1, y: 0 }}
                     exit={{ height: 0, opacity: 0, y: -10 }}
-                    className="overflow-hidden"
+                    className="relative"
                   >
-                    <div className="flex flex-col gap-2 text-sm font-mono text-gray-400 bg-gray-dark/50 p-4 rounded-xl border border-gray-light/30 backdrop-blur-sm min-w-[400px]">
+                    <div className="flex flex-col gap-2 text-sm font-mono text-gray-400 bg-gray-dark/50 p-4 rounded-xl border border-gray-light/30 backdrop-blur-sm min-w-[400px] relative z-30">
                       {contracts.map((contract) => (
                         <div key={contract.name} className="flex justify-between items-center gap-8 group/item">
                           <span>{contract.name}:</span>
@@ -178,7 +178,7 @@ const CallToAction = () => {
                                   initial={{ opacity: 0, y: 10, x: '-50%' }}
                                   animate={{ opacity: 1, y: -25, x: '-50%' }}
                                   exit={{ opacity: 0, y: -30, x: '-50%' }}
-                                  className="absolute left-1/2 text-xs bg-accent-green-mid text-background px-2 py-1 rounded-md font-bold whitespace-nowrap"
+                                  className="absolute left-1/2 text-xs bg-accent-green-mid text-background px-2 py-1 rounded-md font-bold whitespace-nowrap z-50 shadow-lg"
                                 >
                                   Copied!
                                 </motion.span>
