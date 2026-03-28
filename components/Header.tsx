@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { CustomWalletConnect } from './CustomWalletConnect';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,15 +46,24 @@ const Header = () => {
         </div>
 
         <nav className="flex gap-8 ml-12">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="text-gray-300 hover:text-accent-green-mid transition-colors duration-300"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`relative py-1 text-sm font-bold transition-all duration-300 ${isActive ? 'text-accent-green-mid' : 'text-gray-400 hover:text-white'
+                  }`}
+              >
+                {item.label}
+                {isActive && (
+                  <div
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-green-mid rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-4 ml-auto">
