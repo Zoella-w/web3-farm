@@ -260,7 +260,7 @@ const LiveDataTrust = () => {
               className="space-y-2"
             >
               <h2 className="text-4xl font-bold text-white tracking-tight">Data Transparency & Trust</h2>
-              <p className="text-gray-400">Real-time insight into GreenField's economic health.</p>
+              <p className="text-gray-400">Real-time insight into GreenField&apos;s economic health.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

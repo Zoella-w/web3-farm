@@ -3,20 +3,26 @@
 import * as React from "react";
 import {
   RainbowKitProvider,
-  getDefaultConfig,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { injected } from "@wagmi/core";
 import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID";
+const chains = [base, mainnet, polygon, optimism, arbitrum] as const;
 
-const config = getDefaultConfig({
-  appName: "GreenField",
-  projectId: projectId,
-  chains: [base, mainnet, polygon, optimism, arbitrum],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+const config = createConfig({
+  chains,
+  connectors: [injected()],
+  transports: {
+    [base.id]: http(),
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [optimism.id]: http(),
+    [arbitrum.id]: http(),
+  },
+  ssr: true,
 });
 
 const queryClient = new QueryClient();

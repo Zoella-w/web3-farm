@@ -19,6 +19,11 @@ export default function Home() {
       // Update URL hash to trigger visual feedback in HowItWorks component
       window.history.pushState(null, '', '#how-it-works');
       window.dispatchEvent(new HashChangeEvent('hashchange'));
+      
+      // Remove the hash from URL after a short delay to keep it clean
+      setTimeout(() => {
+        window.history.replaceState(null, '', window.location.pathname);
+      }, 1000);
     }
   };
 

@@ -21,7 +21,13 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'Buy Tokens', 'Pools & Yield', 'Governance', 'Dashboard'];
+  const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Buy Tokens', href: '/buy' },
+    { label: 'Pools & Yield', href: '/#live-data' },
+    { label: 'Governance', href: '/#framework' },
+    { label: 'Dashboard', href: '/#live-data' },
+  ];
 
   return (
     <motion.header
@@ -38,13 +44,13 @@ const Header = () => {
         </div>
 
         <nav className="flex gap-8 ml-12">
-          {navItems.map((item, index) => (
+          {navItems.map((item) => (
             <Link
-              key={index}
-              href="#"
+              key={item.label}
+              href={item.href}
               className="text-gray-300 hover:text-accent-green-mid transition-colors duration-300"
             >
-              {item}
+              {item.label}
             </Link>
           ))}
         </nav>
